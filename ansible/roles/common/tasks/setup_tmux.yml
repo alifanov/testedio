@@ -1,0 +1,6 @@
+---
+
+- name: Common | Deploy tmux config
+  template: src=tmux.conf.j2 dest=/home/{{ app_user }}/.tmux.conf owner={{ app_user }}
+  become: yes
+  become_user: "{{ app_user }}"

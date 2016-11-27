@@ -1,0 +1,46 @@
+---
+
+- name: Common | Check if zsh installed
+  stat: path=/home/{{ app_user }}/conf/zshrc
+  register: zshconfig
+
+- name: Common | Install zsh
+  apt: name={{ item }} state=latest update_cache=yes cache_valid_time=86400
+  become: yes
+  with_items:
+   - zsh
+  when: zshconfig.stat.exists == False
+
+- name: Common | Clone oh-my-zsh repo
+  git: repo=https://github.com/robbyrussell/oh-my-zsh.git dest=/home/{{ app_user }}/.oh-my-zsh
+  become: yes
+  become_user: "{{ app_user }}"
+  when: zshconfig.stat.exists == False
+
+- name: Common | Create conf folder in home directory
+  file: path=/home/{{ app_user }}/conf/ state=directory owner={{ app_user }}
+  become: yes
+  become_user: "{{ app_user }}"
+  when: zshconfig.stat.exists == False
+
+- name: Common | Deploy .zshrc
+  template: src=files/zshrc.in dest=/home/{{ app_user }}/conf/zshrc owner={{ app_user }}
+  become: yes
+  become_user: "{{ app_user }}"
+
+- name: Common | Remove standard zshrc
+  file: path=/home/{{ app_user }}/.zshrc state=absent
+  become: yes
+  become_user: "{{ app_user }}"
+  when: zshconfig.stat.exists == False
+
+- name: Common | Symlink zshrc
+  file: path=/home/{{ app_user }}/.zshrc src=/home/{{ app_user }}/conf/zshrc state=link owner={{ app_user }}
+  become: yes
+  become_user: "{{ app_user }}"
+  when: zshconfig.stat.exists == False
+
+- name: Common | Set zsh as default shell
+  become: yes
+  user: name={{ app_user }} shell=/bin/zsh
+  when: zshconfig.stat.exists == False

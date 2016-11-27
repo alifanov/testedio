@@ -1,0 +1,38 @@
+# {{ ansible_managed }}
+
+server {
+    access_log /home/vagrant/logs/nginx.access.log;
+    error_log /home/vagrant/logs/nginx.error.log;
+
+    location / {
+        uwsgi_pass unix:/tmp/{{ app_name }}.sock;
+        include uwsgi_params;
+    }
+
+    location ~ ^/api/track/open\.(.*)\.gif$ {
+        uwsgi_pass unix:/tmp/{{ app_name }}.sock;
+        include uwsgi_params;
+    }
+
+    location /static/admin/ {
+        sendfile off;
+        alias /home/vagrant/venv/lib/python3.4/site-packages/django/contrib/admin/static/admin/;
+    }
+
+    location ~ ^/static/rest_framework/.*\.(gif|jpg|png|js|ttf|jpeg|eot|jsx|woff|html|css|svg)$ {
+        root /home/vagrant/venv/lib/python3.4/site-packages/rest_framework/static/rest_framework/;
+    }
+
+    location ~ ^/static/rest_framework_swagger/.*\.(gif|jpg|png|js|ttf|jpeg|eot|jsx|woff|html|css|svg)$ {
+        root /home/vagrant/venv/lib/python3.4/site-packages/rest_framework_swagger/;
+    }
+
+    location ~ ^/static/rest_framework_docs/.*\.(gif|jpg|png|js|ttf|jpeg|eot|jsx|woff|html|css|svg)$ {
+        root /home/vagrant/venv/lib/python3.4/site-packages/rest_framework_docs/;
+    }
+
+    location ~ \.(gif|jpg|png|js|ttf|jpeg|eot|jsx|woff|html|css|svg)$ {
+        root /home/vagrant/site;
+    }
+
+}

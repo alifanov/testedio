@@ -1,0 +1,20 @@
+---
+
+- name: Ensure UWSGI requirements
+  become: yes
+  apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=86400
+  with_items:
+    - libpcre3
+    - libpcre3-dev
+    - uwsgi-plugin-python3
+
+- name: Ensure UWSGI package
+  become: yes
+  pip: name={{ item }}
+  with_items:
+    - uwsgi
+
+- name: Put ini file
+  template: backup=yes dest=/home/{{ app_user }}/uwsgi.ini src=uwsgi.ini.j2
+  become: yes
+  become_user: "{{ app_user }}"

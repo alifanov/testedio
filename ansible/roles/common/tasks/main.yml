@@ -1,0 +1,34 @@
+---
+
+- name: Common | Install packages
+  become: yes
+  apt: pkg={{ item }} state=latest update_cache=yes
+  with_items:
+  - bash
+  - build-essential
+  - git
+  - htop
+  - language-pack-ru
+  - libssl-dev
+  - libatlas-base-dev
+  - libblas-dev
+  - liblapack-dev
+  - libpq-dev
+  - libssl-doc
+  - make
+  - mosh
+  - ntp
+  - openssl
+  - python-dev
+  - python-passlib
+  - python-pip
+  - python-virtualenv
+  - python-pycurl
+  - python-setuptools
+  - sudo
+
+- include: setup_ntp.yml
+
+- include: setup_zsh.yml
+
+- include: setup_tmux.yml

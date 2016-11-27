@@ -1,0 +1,31 @@
+[uwsgi]
+uid = www-data
+gid = www-data
+
+master = true
+chdir = /home/{{ app_user }}/site
+virtualenv=/home/{{ app_user }}/venv
+home=/home/{{ app_user }}/venv
+touch-reload = /home/{{ app_user }}/touchme
+
+socket = /tmp/{{ app_name }}.sock
+chmod-socket = 777
+module = {{ app_name }}.wsgi
+env = DJANGO_SETTINGS_MODULE={{ app_name }}.settings
+py-autoreload = 3
+
+no-orphans = true
+post-buffering = 32768
+max-requests=5000
+buffer-size=32768
+
+enable-threads = true
+processes = {{ uwsgi_processes }}
+
+harakiri = 60
+harakiri-verbose = true
+limit-as = 768
+
+vacuum = true
+
+log-date = true

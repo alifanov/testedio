@@ -1,0 +1,22 @@
+---
+
+
+- name: Add task "refresh_tokens" to crontab
+  become: yes
+  become_user: "{{ app_user }}"
+  cron:
+    name="refresh_tokens"
+    hour="0"
+    user="{{ app_user }}"
+    job="cd /home/{{ app_user }}/site/ && /home/{{ app_user }}/venv/bin/python manage.py refresh_tokens"
+
+- name: Add task "reset_gmail_limits" to crontab
+  become: yes
+  become_user: "{{ app_user }}"
+  cron:
+    name="reset_gmail_limits"
+    hour="0"
+    minute="0"
+    user="{{ app_user }}"
+    job="cd /home/{{ app_user }}/site/ && /home/{{ app_user }}/venv/bin/python manage.py reset_gmail_limits"
+

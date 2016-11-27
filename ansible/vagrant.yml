@@ -1,0 +1,40 @@
+---
+
+- hosts: all
+  remote_user: vagrant
+  gather_facts: yes
+  vars_files:
+      - vars/main.yml
+  vars:
+    - app_user: vagrant
+    - vagrant_mode: 1
+    - staging_mode: 0
+
+    - postgresql_version: 9.5
+    - postgresql_ext_postgis_version: "2.2"
+    - postgresql_users:
+        - name: "{{ db_user }}"
+          pass: "{{ db_password }}"
+          encrypted: no
+        - name: "{{ test_db_user }}"
+          pass: "{{ test_db_password }}"
+          encrypted: no
+    - postgresql_user_privileges:
+        - name: "{{ db_user }}"
+        - name: "{{ test_db_user }}"
+          db: "{{ test_db_name }}"
+          role_attr_flags: "CREATEDB,SUPERUSER"
+    - postgresql_databases:
+        - name: "{{ db_name }}"
+        - name: "{{ test_db_name }}"
+
+    - redis_bind: 127.0.0.1
+    - memcached_memory_limit: 256
+
+  roles:
+    - common
+    - { role: ANXS.postgresql, become: yes }
+    - { role: DavidWittman.redis, become: yes }
+    - project
+    - supervisor
+    - nginx

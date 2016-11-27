@@ -1,0 +1,21 @@
+---
+
+- name: Create log directory
+  file: path=/home/{{ app_user }}/logs state=directory mode=0755
+  become: yes
+  become_user: "{{ app_user }}"
+
+- include: ensure_virtualenv.yml
+
+- include: ensure_uwsgi.yml
+
+- name: Copy bundled version of local.py
+  template: src=local.py.j2
+            dest=/home/{{ app_user }}/site/{{ app_name }}/local.py
+  become: yes
+  become_user: "{{ app_user }}"
+
+- name: Migrate application
+  django_manage: app_path=/home/{{ app_user }}/site command=migrate virtualenv=/home/{{ app_user }}/venv/
+  become: yes
+  become_user: "{{ app_user }}"

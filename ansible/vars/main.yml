@@ -1,0 +1,13 @@
+---
+
+ntp_timezone: Europe/Moscow
+app_name: testedio
+uwsgi_processes: 1
+
+db_name: testeddb
+db_user: testeduser
+db_password: 123
+
+test_db_name: test_db
+test_db_user: test_user
+test_db_password: 123

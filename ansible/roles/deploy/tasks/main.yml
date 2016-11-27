@@ -1,0 +1,13 @@
+---
+
+- name: Ensure projectdir permission
+  file: path=/home/{{ app_user }}/site/ state=directory owner="{{ app_user }}" recurse=yes
+  become: yes
+  tags:
+    - deploy
+
+- authorized_key: user="{{ app_user }}" key="{{ item }}" state=present
+  become: yes
+  become_user: "{{ app_user }}"
+  with_file:
+    - files/lifanov.pub

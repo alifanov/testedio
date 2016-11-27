@@ -1,0 +1,22 @@
+---
+
+- name: Common | Ensure ntp is configured
+  become: Yes
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf
+  notify:
+    - restart ntp
+  tags: ntp
+
+- name: Common | Ensure ntp is running and enabled
+  become: Yes
+  service: name=ntp state=running enabled=yes
+  tags: ntp
+
+- name: Common | Set the correct timezone.
+  become: Yes
+  file:
+    src: "/usr/share/zoneinfo/{{ ntp_timezone }}"
+    dest: /etc/localtime
+    state: link
+    force: yes
+  tags: ntp

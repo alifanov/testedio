@@ -1,0 +1,50 @@
+---
+
+- name: Install APT project dependencies
+  become: yes
+  apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=86400
+  with_items:
+  - libffi-dev
+  - libfreetype6-dev
+  - libjpeg8-dev
+  - liblcms2-dev
+  - libpq-dev
+  - libtiff5-dev
+  - libwebp-dev
+  - python-tk
+  - tcl8.6-dev
+  - tk8.6-dev
+  - zlib1g-dev
+  - libgeos-c1
+  - postgresql-9.5-postgis-scripts
+  notify:
+    - restart postgresql
+
+- postgresql_ext: name=postgis db="{{ db_name }}"
+
+- name: Add Python 3 repo
+  become: Yes
+  apt_repository: repo='ppa:fkrull/deadsnakes'
+
+- name: Install Python 3.4
+  become: Yes
+  apt: name={{ item }} update_cache=yes cache_valid_time=86400 state=latest
+  with_items:
+  - python3.4
+  - python3.4-dev
+  - libncurses5-dev
+
+- name: Upgrade PIP version.
+  become: yes
+  become_user: "{{ app_user }}"
+  pip: name="pip"
+       virtualenv=/home/{{ app_user }}/venv/ virtualenv_python=/usr/bin/python3.4
+       state=latest
+
+- name: Ensure PIP project dependencies for staging
+  become: yes
+  become_user: "{{ app_user }}"
+  pip: requirements=/home/{{ app_user }}/site/requirements.txt
+       virtualenv=/home/{{ app_user }}/venv
+       virtualenv_python=/usr/bin/python3.4
+       state=latest

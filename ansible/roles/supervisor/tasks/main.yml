@@ -1,0 +1,22 @@
+---
+
+- name: Ensure Supervisor package
+  become: yes
+  apt: name={{ item }}
+  with_items:
+    - supervisor
+
+- name: Deploy App Supervisor confgiuration file
+  become: yes
+  template: backup=yes dest=/etc/supervisor/conf.d/{{ app_name }}.conf src=app.conf.j2
+
+- name: Update Supervisor
+  become: yes
+  shell: supervisorctl update
+
+- name: Restart supervisor application
+  become: yes
+  supervisorctl: name={{ app_name }} state=restarted
+  tags:
+    - deploy
+

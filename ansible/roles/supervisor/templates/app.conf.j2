@@ -1,0 +1,14 @@
+[program:{{ app_name }}]
+user={{ app_user }}
+
+command=/home/{{ app_user }}/venv/bin/uwsgi /home/{{ app_user }}/uwsgi.ini
+
+stdout_logfile=/home/{{ app_user }}/logs/uwsgi.log
+sterr_logfile=/home/{{ app_user }}/logs/uwsgi_err.log
+
+autostart=true
+autorestart=true
+redirect_stderr=true
+
+stopwaitsecs = 5
+stopsignal=INT

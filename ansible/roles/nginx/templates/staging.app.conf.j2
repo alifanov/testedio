@@ -1,0 +1,30 @@
+# {{ ansible_managed }}
+
+server {
+    listen 80;
+    server_name {{ server_name }};
+
+    access_log  /home/{{ app_user }}/logs/nginx.log;
+    error_log   /home/{{ app_user }}/logs/nginx_err.log;
+
+    location / {
+        uwsgi_pass unix:/tmp/{{ app_name }}.sock;
+        include uwsgi_params;
+    }
+
+    location ~ ^/(static|uploaded)/ {
+        root /home/{{ app_user }}/site/public/;
+        access_log off;
+        expires 30d;
+    }
+
+    # fix for api2
+    location ~ ^/api2/(static|uploaded)/ {
+        root /home/{{ app_user }}/site/public/;
+        access_log off;
+        expires 30d;
+    }
+    location ~ \.(gif|jpg|png|js|ttf|jpeg|eot|jsx|woff|html|css|svg|map)$ {
+        root /home/vampire/site/frontend/public;
+    }
+}

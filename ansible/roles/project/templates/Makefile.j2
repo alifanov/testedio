@@ -1,0 +1,7 @@
+init:
+        vagrant up
+
+loaddump:
+        dropdb {{ db_name }} -U {{ db_user }}
+        createdb {{ db_name }} -U {{ db_user }}
+        PGPASSWORD="{{ db_password }}" pg_restore -d {{ db_name }} -U {{ db_user }} < dump.sql

@@ -1,0 +1,28 @@
+# {{ ansible_managed }}
+
+driftfile /var/lib/ntp/ntp.drift
+
+statistics loopstats peerstats clockstats
+
+filegen loopstats file loopstats type day enable
+filegen peerstats file peerstats type day enable
+filegen clockstats file clockstats type day enable
+
+restrict default ignore
+restrict -6 default ignore
+restrict 78.155.208.0  mask 255.255.254.0 nomodify notrap nopeer
+restrict 127.0.0.1
+restrict ::1
+restrict 192.36.143.130 notrap noquery
+restrict 95.213.132.250 notrap noquery
+restrict 46.254.216.12 notrap noquery
+restrict 91.207.136.50 notrap noquery
+restrict 46.252.169.154 notrap noquery
+restrict 91.206.16.3 notrap noquery
+restrict 83.143.51.50 notrap noquery
+restrict 217.195.81.6 notrap noquery
+
+server 0.pool.ntp.org iburst
+server 1.pool.ntp.org iburst
+
+disable monitor
